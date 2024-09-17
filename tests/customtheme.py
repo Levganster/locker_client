@@ -5,12 +5,13 @@ import requests
 import threading
 import asyncio
 import websockets
+import socket
 from PIL import Image
 from pystray import Icon
 
 # Function to send authentication data to the API
 def authenticate(username, password):
-    url = "http://192.168.248.169:8000/auth/token"  # URL of your API
+    url = "http://212.193.27.248:8000/auth/token"  # URL of your API
     payload = {"username": username, "password": password}
 
     try:
@@ -40,7 +41,7 @@ class ClientApp:
 
         # Set full-screen mode
         self.root.attributes('-fullscreen', True)
-        self.root.attributes('-topmost', True)
+        # self.root.attributes('-topmost', True)
         self.root.protocol("WM_DELETE_WINDOW", disable_event)
 
         # Load the background image using CTkImage
@@ -123,7 +124,8 @@ class ClientApp:
         self.root.quit()
 
     async def listen_to_server(self):
-        url = "ws://192.168.248.169:8000/websockets/ws"  # WebSocket URL
+        url = f"ws://212.193.27.248:8000/websockets/ws/{socket.gethostname()}"  # WebSocket URL
+        print(url)
         async with websockets.connect(url) as websocket:
             while True:
                 try:
@@ -164,8 +166,7 @@ class ClientApp:
             self.show_window()
         if comand_code == 3:
             self.exit_app()
-        
-        print(hide, show)
+
 
 # Run the application
 if __name__ == "__main__":
