@@ -11,7 +11,7 @@ from pystray import Icon
 
 # Function to send authentication data to the API
 def authenticate(username, password):
-    url = "http://212.193.27.248:8000/auth/token"  # URL of your API
+    url = "http://localhost:8000/auth/token"  # URL of your API
     payload = {"username": username, "password": password}
 
     try:
@@ -124,7 +124,7 @@ class ClientApp:
         self.root.quit()
 
     async def listen_to_server(self):
-        url = f"ws://212.193.27.248:8000/websockets/ws"  # WebSocket URL
+        url = f"ws://localhost:8000/websockets/ws"  # WebSocket URL
         print(url)
         async with websockets.connect(url) as websocket:
             while True:
