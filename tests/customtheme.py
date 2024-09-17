@@ -41,7 +41,7 @@ class ClientApp:
 
         # Set full-screen mode
         self.root.attributes('-fullscreen', True)
-        # self.root.attributes('-topmost', True)
+        self.root.attributes('-topmost', True)
         self.root.protocol("WM_DELETE_WINDOW", disable_event)
 
         # Load the background image using CTkImage
@@ -124,7 +124,7 @@ class ClientApp:
         self.root.quit()
 
     async def listen_to_server(self):
-        url = f"ws://212.193.27.248:8000/websockets/ws/{socket.gethostname()}"  # WebSocket URL
+        url = f"ws://212.193.27.248:8000/websockets/ws/"  # WebSocket URL
         print(url)
         async with websockets.connect(url) as websocket:
             while True:
