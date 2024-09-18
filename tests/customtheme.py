@@ -11,7 +11,7 @@ from pystray import Icon
 
 # Function to send authentication data to the API
 def authenticate(username, password):
-    url = "http://localhost:8000/auth/token"  # URL of your API
+    url = "http://212.193.27.248:8000/auth/token"  # URL of your API
     payload = {"username": username, "password": password}
 
     try:
