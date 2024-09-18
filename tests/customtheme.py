@@ -32,6 +32,8 @@ def disable_event():
 # Client application class
 class ClientApp:
     def __init__(self, root):
+        
+        self.websocket = None
         # Set up CustomTkinter
         ctk.set_appearance_mode("dark")  # Theme (dark/light)
         ctk.set_default_color_theme("blue")  # Color scheme
@@ -99,6 +101,8 @@ class ClientApp:
             hide = True
             show = False
             self.hide_to_tray()
+            
+            asyncio.run(self.send_message(username))
         else:
             messagebox.showerror("Error", f"Authorization error: {result}")
 
@@ -127,32 +131,34 @@ class ClientApp:
         url = f"ws://localhost:8000/websockets/ws/{socket.gethostname()}"  # WebSocket URL
         print(url)
         async with websockets.connect(url) as websocket:
-            while True:
-                try:
-                    message = await websocket.recv()  # Receive messages from the server
-                    print(f"Message from server: {message}")
-                    # Handle the command from the message
-                    self.handle_message(message)
-                except websockets.ConnectionClosed:
-                    print("Connection to the server closed")
-                    break
+            self.websocket = websocket
+            try:
+                while True:
+                    try:
+                        # Получение сообщений от сервера
+                        message = await websocket.recv()
+                        print(f"Message from server: {message}")
+                        # Обработка полученного сообщения
+                        self.control(message)
+                    except websockets.ConnectionClosed:
+                        print("Connection to the server closed")
+                        break
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+    async def send_message(self, message):
+        if self.websocket is not None:
+            try:
+                await self.websocket.send(message)
+                print(f"Message sent to server: {message}")
+            except websockets.ConnectionClosed:
+                print("Cannot send message, connection is closed.")
+        else:
+            print("WebSocket connection is not established.")
 
     def start_websocket_connection(self):
         # Start an asynchronous WebSocket connection
         asyncio.run(self.listen_to_server())
-
-    def handle_message(self, message):
-        """
-        Handle a message from the server.
-        Assume the message is in JSON format and contains a 'command_code' key.
-        """
-        try:
-            data = json.loads(message)
-            comand_code = data  # Extract the command code
-            if comand_code is not None:
-                self.control(comand_code)  # Call the control function
-        except json.JSONDecodeError:
-            print("Error decoding message")
 
     def control(self, comand_code):
         global hide, show
