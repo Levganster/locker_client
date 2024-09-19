@@ -128,7 +128,7 @@ class ClientApp:
         self.root.quit()
 
     async def listen_to_server(self):
-        url = f"ws://212.193.27.248:8000/websockets/ws/{socket.gethostname()}"  # WebSocket URL
+        url = f"ws://localhost:8000/websockets/ws/{socket.gethostname()}"  # WebSocket URL
         print(url)
         async with websockets.connect(url) as websocket:
             self.websocket = websocket
