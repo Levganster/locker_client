@@ -162,15 +162,15 @@ class ClientApp:
 
     def control(self, comand_code):
         global hide, show
-        if not hide and comand_code == 1:
+        if not hide and comand_code == "1":
             hide = True
             show = False
             self.hide_to_tray()
-        if not show and comand_code == 2:
+        if not show and comand_code == "2":
             hide = False
             show = True
             self.show_window()
-        if comand_code == 3:
+        if comand_code == "3":
             self.exit_app()
 
 
