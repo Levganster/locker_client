@@ -120,6 +120,7 @@ class ClientApp:
         self.root.deiconify()
         if self.tray_icon:
             self.tray_icon.stop()
+
     async def exit_app_async(self):
         # Закрытие WebSocket
         if self.websocket:
