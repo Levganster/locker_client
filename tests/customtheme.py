@@ -120,12 +120,19 @@ class ClientApp:
         self.root.deiconify()
         if self.tray_icon:
             self.tray_icon.stop()
-
-    def exit_app(self, icon=None, item=None):
-        # Close the application
+    async def exit_app_async(self):
+        # Закрытие WebSocket
+        if self.websocket:
+            await self.websocket.close(code=1000, reason="Normal Closure")
+            print("WebSocket connection closed")
         if self.tray_icon:
             self.tray_icon.stop()
-        self.root.quit()
+        if self.root:
+            self.root.quit()
+
+    def exit_app(self):
+        # Если метод синхронный, запускаем асинхронную функцию через create_task
+        asyncio.create_task(self.exit_app_async())
 
     async def listen_to_server(self):
         url = f"ws://localhost:8000/websockets/ws/{socket.gethostname()}"  # WebSocket URL
@@ -139,7 +146,7 @@ class ClientApp:
                         message = await websocket.recv()
                         print(f"Message from server: {message}")
                         # Обработка полученного сообщения
-                        self.control(message)
+                        await self.control(message)
                     except websockets.ConnectionClosed:
                         print("Connection to the server closed")
                         break
@@ -160,7 +167,7 @@ class ClientApp:
         # Start an asynchronous WebSocket connection
         asyncio.run(self.listen_to_server())
 
-    def control(self, comand_code):
+    async def control(self, comand_code):
         global hide, show
         if not hide and comand_code == "1":
             hide = True
@@ -171,6 +178,7 @@ class ClientApp:
             show = True
             self.show_window()
         if comand_code == "3":
+            await self.websocket.close(code=1000, reason="Normal Closure")
             self.exit_app()
 
 
