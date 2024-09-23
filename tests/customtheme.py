@@ -136,7 +136,7 @@ class ClientApp:
         asyncio.create_task(self.exit_app_async())
 
     async def listen_to_server(self):
-        url = f"ws://212.193.27.248:800/websockets/ws/{socket.gethostname()}"  # WebSocket URL
+        url = f"ws://212.193.27.248:80/websockets/ws/{socket.gethostname()}"  # WebSocket URL
         print(url)
         async with websockets.connect(url) as websocket:
             self.websocket = websocket
