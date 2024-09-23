@@ -120,6 +120,7 @@ class ClientApp:
         self.root.deiconify()
         if self.tray_icon:
             self.tray_icon.stop()
+
     async def exit_app_async(self):
         # Закрытие WebSocket
         if self.websocket:
@@ -135,37 +136,39 @@ class ClientApp:
         asyncio.create_task(self.exit_app_async())
 
     async def listen_to_server(self):
-        url = f"ws://212.193.27.248:80/websockets/ws/{socket.gethostname()}"  # WebSocket URL
+        url = f"ws://212.193.27.248:800/websockets/ws/{socket.gethostname()}"  # WebSocket URL
         print(url)
         async with websockets.connect(url) as websocket:
-            while True:
-                try:
-                    message = await websocket.recv()  # Receive messages from the server
-                    print(f"Message from server: {message}")
-                    # Handle the command from the message
-                    self.handle_message(message)
-                except websockets.ConnectionClosed:
-                    print("Connection to the server closed")
-                    break
+            self.websocket = websocket
+            try:
+                while True:
+                    try:
+                        # Получение сообщений от сервера
+                        message = await websocket.recv()
+                        print(f"Message from server: {message}")
+                        # Обработка полученного сообщения
+                        await self.control(message)
+                    except websockets.ConnectionClosed:
+                        print("Connection to the server closed")
+                        break
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+    async def send_message(self, message):
+        if self.websocket is not None:
+            try:
+                await self.websocket.send(message)
+                print(f"Message sent to server: {message}")
+            except websockets.ConnectionClosed:
+                print("Cannot send message, connection is closed.")
+        else:
+            print("WebSocket connection is not established.")
 
     def start_websocket_connection(self):
         # Start an asynchronous WebSocket connection
         asyncio.run(self.listen_to_server())
 
-    def handle_message(self, message):
-        """
-        Handle a message from the server.
-        Assume the message is in JSON format and contains a 'command_code' key.
-        """
-        try:
-            data = json.loads(message)
-            comand_code = data  # Extract the command code
-            if comand_code is not None:
-                self.control(comand_code)  # Call the control function
-        except json.JSONDecodeError:
-            print("Error decoding message")
-
-    def control(self, comand_code):
+    async def control(self, comand_code):
         global hide, show
         if not hide and comand_code == "1":
             hide = True
@@ -175,7 +178,8 @@ class ClientApp:
             hide = False
             show = True
             self.show_window()
-        if comand_code == 3:
+        if comand_code == "3":
+            await self.websocket.close(code=1000, reason="Normal Closure")
             self.exit_app()
 
 
