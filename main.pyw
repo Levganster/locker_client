@@ -47,7 +47,7 @@ class ClientApp:
         self.root.protocol("WM_DELETE_WINDOW", disable_event)
 
         # Load the background image using CTkImage
-        self.background_image = ctk.CTkImage(Image.open("C:/Users/kuzmi/Documents/locker_client-main/background.jpg"), size=(self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
+        self.background_image = ctk.CTkImage(Image.open("./background.jpg"), size=(self.root.winfo_screenwidth(), self.root.winfo_screenheight()))
 
         # Add the background image
         self.background_label = ctk.CTkLabel(root, image=self.background_image, text="")
