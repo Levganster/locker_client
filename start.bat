@@ -1,1 +1,1 @@
-start pyw %USERPROFILE%\Documents\locker_client\main.py
+start pyw %USERPROFILE%\Documents\locker_client-main\main.py
