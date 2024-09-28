@@ -9,8 +9,8 @@ import socket
 import os
 from PIL import Image
 from pystray import Icon
-
 # Function to send authentication data to the API
+retry = True
 def authenticate(username, password):
     url = "http://212.193.27.248:443/auth/token"  # URL of your API
     payload = {"username": username, "password": password}
@@ -19,8 +19,13 @@ def authenticate(username, password):
         response = requests.post(url, json=payload)
         if response.status_code == 200:
             return True, response.json()  # Return True and the token
+        elif response.status_code == 500:
+            if retry:
+                print("500====================================")
+                authenticate(username,password)
+                retry = False
         else:
-            return False, response.text  # Return error
+            return False, response.json()  # Return error
     except Exception as e:
         return False, str(e)
 
@@ -103,12 +108,14 @@ class ClientApp:
             hide = True
             show = False
             self.hide_to_tray()
+            self.password_entry.delete(0,ctk.END)
+            self.password_entry.insert(0,"")
 
             group = jwt.decode(self.token, options={"verify_signature": False})['subject']['group']
 
             asyncio.run(self.send_message(f"username: {username}, group: {group}"))
         else:
-            messagebox.showerror("Error", f"Authorization error: {result}")
+            messagebox.showerror("Error", result['detail'])
 
     def hide_to_tray(self):
         # Minimize the window
