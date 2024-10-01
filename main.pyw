@@ -167,7 +167,6 @@ class ClientApp:
             print("WebSocket connection is not established.")
 
     def start_websocket_connection(self):
-        # Start an asynchronous WebSocket connection
         asyncio.run(self.listen_to_server())
 
     async def control(self, comand_code):
