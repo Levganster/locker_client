@@ -69,6 +69,7 @@ class ClientApp:
             asyncio.run(self.send_message(f"username: {username}, group: {group}"))
             print(f"username: {username}, group: {group}")
             self.hide_to_tray()
+            self.password_entry.delete(0, ctk.END)
         else:
             messagebox.showerror("Error", result['detail'])
 

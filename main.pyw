@@ -101,6 +101,7 @@ class ClientApp:
             hide = True
             show = False
             self.hide_to_tray()
+            self.password_entry.delete(0, ctk.END)
 
             group = jwt.decode(self.token, options={"verify_signature": False})['subject']['group']
 
