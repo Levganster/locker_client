@@ -4,3 +4,4 @@ pystray==0.19.5
 Requests==2.32.3
 websockets==13.0.1
 PyJwt
+click

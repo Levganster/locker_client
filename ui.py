@@ -12,8 +12,11 @@ from websocket_client import start_websocket_connection
 
 
 class ClientApp:
-    def __init__(self, root):
+    def __init__(self, root, host, port):
         self.websocket = None
+
+        self.host = host
+        self.port = port
 
         self.status = "show"
 
@@ -61,7 +64,7 @@ class ClientApp:
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        success, result = authenticate(username, password)
+        success, result = authenticate(username, password, self)
         if success:
             self.token = result.get('access_token')
             messagebox.showinfo("Success", "Logged in successfully!")

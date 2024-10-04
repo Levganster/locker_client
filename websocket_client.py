@@ -3,7 +3,7 @@ import websockets
 import socket
 
 async def listen_to_server(app):
-    url = f"ws://212.193.27.248:443/websockets/ws/{socket.gethostname()}"
+    url = f"ws://{app.host}:{app.port}/websockets/ws/{socket.gethostname()}"
     async with websockets.connect(url) as websocket:
         app.websocket = websocket
         try:

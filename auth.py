@@ -2,8 +2,8 @@ import requests
 
 retry = True
 
-def authenticate(username, password):
-    url = "http://212.193.27.248:443/auth/token"  # URL of your API
+def authenticate(username, password, app):
+    url = f"http://{app.host}:{app.port}/auth/token"  # URL of your API
     payload = {"username": username, "password": password}
 
     try:
