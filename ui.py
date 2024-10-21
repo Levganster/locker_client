@@ -61,10 +61,13 @@ class ClientApp:
         websocket_thread.start()
 
     def login(self):
+        host = self.host
+        port = self.port
+
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        success, result = authenticate(username, password, self)
+        success, result = authenticate(username=username, password=password, host=host, port=port)
         if success:
             self.token = result.get('access_token')
             messagebox.showinfo("Success", "Logged in successfully!")
@@ -74,7 +77,11 @@ class ClientApp:
             self.hide_to_tray()
             self.password_entry.delete(0, ctk.END)
         else:
-            messagebox.showerror("Error", result['detail'])
+            print(result)
+            if result.get('detail'):
+                messagebox.showerror("Error", result.get('detail'))
+            else:
+                messagebox.showerror("Error", result)
 
     def hide_to_tray(self):
         self.root.withdraw()
